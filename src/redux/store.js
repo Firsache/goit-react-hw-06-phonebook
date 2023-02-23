@@ -1,5 +1,4 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-// import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import {
   persistStore,
@@ -12,16 +11,11 @@ import {
   REGISTER,
 } from 'redux-persist';
 
-import { contactsReducer } from './contactsSlice';
-import { globalReducer } from './contactsSlice';
-
-// const persistedContactsReducer = persistReducer(
-//   { key: 'contacts', storage, whitelist: ['contacts', 'themeTitle'] },
-//   contactsReducer
-// );
+import { contactsReducer } from './contacts/contactsSlice';
+import { globalReducer } from './global/globalSlice';
 
 const persistedContactsReducer = persistReducer(
-  { key: 'contacts', storage },
+  { key: 'contacts', storage, whitelist: ['contacts'] },
   contactsReducer
 );
 
@@ -32,7 +26,7 @@ const persistedThemeReducer = persistReducer(
 
 const rootReducer = combineReducers({
   contacts: persistedContactsReducer,
-  theme: persistedThemeReducer,
+  global: persistedThemeReducer,
 });
 
 export const store = configureStore({

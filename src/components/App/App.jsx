@@ -1,20 +1,11 @@
-// import { nanoid } from 'nanoid';
-// import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-// import { useLocalStorage } from 'hooks/useLocalStorage';
+import { useSelector } from 'react-redux';
 
 import { MdContactPhone } from 'react-icons/md';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { deleteContact, setFilteredName } from 'redux/contactsSlice';
-
-import { toggleThemeTitle } from 'redux/contactsSlice';
-import {
-  selectContacts,
-  selectFilteredName,
-  selectThemeTitle,
-} from 'redux/selectors';
+import { selectContacts } from 'redux/contacts/selectors';
+import { selectThemeTitle } from 'redux/global/selectors';
 
 import { Container, Title } from './App.styled';
 import { GlobalStyles } from 'styles/GlobalStyles/globalStyles.styled';
@@ -33,27 +24,8 @@ import {
 
 export function App() {
   const contacts = useSelector(selectContacts);
-  const filteredName = useSelector(selectFilteredName);
   const themeTitle = useSelector(selectThemeTitle);
-  const dispatch = useDispatch();
 
-  const toggleTheme = () => {
-    dispatch(toggleThemeTitle());
-  };
-
-  const deleteSelectedContact = contactId => {
-    dispatch(deleteContact(contactId));
-  };
-
-  const handleFilter = event => {
-    dispatch(setFilteredName(event.target.value));
-  };
-
-  const getFilteredContacts = () => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filteredName.toLowerCase())
-    );
-  };
   const normalizedTheme = { ...theme, ...colors[themeTitle] };
 
   return (
@@ -76,22 +48,43 @@ export function App() {
             <Title>Phonebook</Title>
           </Box>
 
-          <ThemeSwitcher switchTheme={toggleTheme} themeTitle={themeTitle} />
+          <ThemeSwitcher />
         </Box>
         <Container>
           <Form />
           <Section title="Contacts">
-            {contacts.length > 0 ? (
-              <Contacts
-                contacts={getFilteredContacts()}
-                deleteContact={deleteSelectedContact}
-              >
-                {contacts.length > 1 ? (
-                  <Filter value={filteredName} filterChange={handleFilter} />
-                ) : (
-                  ''
-                )}
+            {/* варінт 1
+            {switch (contacts.length){
+            case 0:
+            <Notification message="There are no contacts in the phonebook yet..." />;
+            break;
+            case 1:
+            <Contacts />;
+            break;
+            default:
+              <Contacts>
+                <Filter />
+              </Contacts>}
+          } */}
+            {/* варінт 2
+            {contacts.length > 1 && 
+              <Contacts>
+                <Filter />
+              </Contacts>}
+            {contacts.length === 1 && <Contacts />}
+            {contacts.length === 0 && (
+              <Notification message="There are no contacts in the phonebook yet..." />
+            )} */}
+            {/* варінт 3
+            {contacts?.length ? (
+              <Contacts>
+                <Filter />
               </Contacts>
+            ) : (
+              <Notification message="There are no contacts in the phonebook yet..." />
+            )} */}
+            {contacts.length > 0 ? (
+              <Contacts>{contacts.length > 1 ? <Filter /> : ''}</Contacts>
             ) : (
               <Notification message="There are no contacts in the phonebook yet..." />
             )}

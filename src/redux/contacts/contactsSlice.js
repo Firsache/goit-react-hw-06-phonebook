@@ -5,10 +5,6 @@ const initialContactsState = {
   filteredName: '',
 };
 
-const initialGlobalState = {
-  themeTitle: 'light',
-};
-
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: initialContactsState,
@@ -30,19 +26,6 @@ const contactsSlice = createSlice({
   },
 });
 
-const globalSlice = createSlice({
-  name: 'theme',
-  initialState: initialGlobalState,
-  reducers: {
-    toggleThemeTitle(state) {
-      state.themeTitle = state.themeTitle === 'light' ? 'dark' : 'light';
-    },
-  },
-});
-
 export const { addContact, deleteContact, setFilteredName } =
   contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;
-
-export const { toggleThemeTitle } = globalSlice.actions;
-export const globalReducer = globalSlice.reducer;

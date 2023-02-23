@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 import { Section } from 'components/Section/Section';
-import { addContact } from 'redux/contactsSlice';
+import { addContact } from 'redux/contacts/contactsSlice';
 
 import { FormComponent, Label, Span, Input, Button } from './Form.styled';
 
