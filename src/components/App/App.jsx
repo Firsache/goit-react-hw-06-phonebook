@@ -1,10 +1,20 @@
-import { nanoid } from 'nanoid';
-import { useState } from 'react';
-import { useLocalStorage } from 'hooks/useLocalStorage';
+// import { nanoid } from 'nanoid';
+// import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+// import { useLocalStorage } from 'hooks/useLocalStorage';
 
 import { MdContactPhone } from 'react-icons/md';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import { deleteContact, setFilteredName } from 'redux/contactsSlice';
+
+import { toggleThemeTitle } from 'redux/contactsSlice';
+import {
+  selectContacts,
+  selectFilteredName,
+  selectThemeTitle,
+} from 'redux/selectors';
 
 import { Container, Title } from './App.styled';
 import { GlobalStyles } from 'styles/GlobalStyles/globalStyles.styled';
@@ -22,37 +32,21 @@ import {
 } from '../index';
 
 export function App() {
-  const [contacts, setContacts] = useLocalStorage('contacts', []);
-  const [themeTitle, setThemeTitle] = useLocalStorage('theme', 'light');
-  const [filteredName, setFilteredName] = useState('');
+  const contacts = useSelector(selectContacts);
+  const filteredName = useSelector(selectFilteredName);
+  const themeTitle = useSelector(selectThemeTitle);
+  const dispatch = useDispatch();
 
-  const switchTheme = () => {
-    setThemeTitle(prevState => (prevState === 'light' ? 'dark' : 'light'));
+  const toggleTheme = () => {
+    dispatch(toggleThemeTitle());
   };
 
-  const addContact = ({ name, number }) => {
-    if (contacts.some(c => c.name === name)) {
-      toast.error(`Contact ${name} already exists!`, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
-      return;
-    }
-    if (contacts.some(c => c.number === number)) {
-      toast.error(`Contact ${number} already exists!`, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
-      return;
-    }
-    setContacts(prevState => [{ id: nanoid(4), name, number }, ...prevState]);
-  };
-
-  const deleteContact = contactId => {
-    const newContacts = contacts.filter(c => c.id !== contactId);
-    setContacts(newContacts);
+  const deleteSelectedContact = contactId => {
+    dispatch(deleteContact(contactId));
   };
 
   const handleFilter = event => {
-    setFilteredName(event.target.value);
+    dispatch(setFilteredName(event.target.value));
   };
 
   const getFilteredContacts = () => {
@@ -82,15 +76,15 @@ export function App() {
             <Title>Phonebook</Title>
           </Box>
 
-          <ThemeSwitcher switchTheme={switchTheme} themeTitle={themeTitle} />
+          <ThemeSwitcher switchTheme={toggleTheme} themeTitle={themeTitle} />
         </Box>
         <Container>
-          <Form addContact={addContact} />
+          <Form />
           <Section title="Contacts">
             {contacts.length > 0 ? (
               <Contacts
                 contacts={getFilteredContacts()}
-                deleteContact={deleteContact}
+                deleteContact={deleteSelectedContact}
               >
                 {contacts.length > 1 ? (
                   <Filter value={filteredName} filterChange={handleFilter} />
