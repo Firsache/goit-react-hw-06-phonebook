@@ -1,10 +1,17 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { toast } from 'react-toastify';
+
 import { Section } from 'components/Section/Section';
+import { addContact } from 'redux/contactsSlice';
 
 import { FormComponent, Label, Span, Input, Button } from './Form.styled';
 
-export function Form({ addContact }) {
+export function Form() {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.contacts);
+
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -18,7 +25,20 @@ export function Form({ addContact }) {
   const handleSubmit = evt => {
     evt.preventDefault();
 
-    addContact({ name: name.trim(), number });
+    if (contacts.some(c => c.name === name)) {
+      toast.error(`Contact ${name} already exists!`, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+    if (contacts.some(c => c.number === number)) {
+      toast.error(`Contact ${number} already exists!`, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+    dispatch(addContact({ name: name.trim(), number }));
+
     setName('');
     setNumber('');
   };
@@ -55,7 +75,3 @@ export function Form({ addContact }) {
     </Section>
   );
 }
-
-Form.propTypes = {
-  addContact: PropTypes.func.isRequired,
-};
