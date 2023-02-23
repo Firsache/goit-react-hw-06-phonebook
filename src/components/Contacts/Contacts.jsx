@@ -1,12 +1,13 @@
-import PropTypes from 'prop-types';
-
-import { List, Item, Text } from './Contacts.styled';
-import { Button } from 'components/Form/Form.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectContacts, selectFilteredName } from 'redux/contacts/selectors';
 import { deleteContact } from 'redux/contacts/contactsSlice';
 
-export function Contacts({ children }) {
+import { Notification } from 'components';
+import { Button } from 'components/Form/Form.styled';
+
+import { List, Item, Text } from './Contacts.styled';
+
+export function Contacts() {
   const contacts = useSelector(selectContacts);
   const filteredName = useSelector(selectFilteredName);
   const dispatch = useDispatch();
@@ -24,28 +25,27 @@ export function Contacts({ children }) {
   const filteredContacts = getFilteredContacts(contacts, filteredName);
 
   return (
-    <>
-      {children}
-      <List>
-        {filteredContacts.map(({ id, name, number }) => (
-          <Item key={id}>
-            <Text>
-              {name}: <span>{number}</span>
-            </Text>
-            <Button
-              onClick={() => {
-                deleteSelectedContact(id);
-              }}
-            >
-              Delete
-            </Button>
-          </Item>
-        ))}
-      </List>
-    </>
+    <List>
+      {filteredContacts.map(({ id, name, number }) => (
+        <Item key={id}>
+          <Text>
+            {name}: <span>{number}</span>
+          </Text>
+          <Button
+            onClick={() => {
+              deleteSelectedContact(id);
+            }}
+          >
+            Delete
+          </Button>
+        </Item>
+      ))}
+      {!contacts.length && (
+        <Notification message="There are no contacts in the phonebook yet..." />
+      )}
+      {!contacts.length && !filteredContacts && (
+        <Notification message="There isn't such a contact..." />
+      )}
+    </List>
   );
 }
-
-Contacts.propTypes = {
-  children: PropTypes.node,
-};

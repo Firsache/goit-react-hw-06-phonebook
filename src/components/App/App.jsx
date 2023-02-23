@@ -17,7 +17,6 @@ import {
   Form,
   Filter,
   Section,
-  Notification,
   ThemeSwitcher,
   Box,
 } from '../index';
@@ -83,11 +82,8 @@ export function App() {
             ) : (
               <Notification message="There are no contacts in the phonebook yet..." />
             )} */}
-            {contacts.length > 0 ? (
-              <Contacts>{contacts.length > 1 ? <Filter /> : ''}</Contacts>
-            ) : (
-              <Notification message="There are no contacts in the phonebook yet..." />
-            )}
+            {contacts.length > 1 && <Filter />}
+            <Contacts />
           </Section>
           <ToastContainer autoClose={3000} />
           <GlobalStyles />
