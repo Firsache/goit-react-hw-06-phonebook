@@ -25,27 +25,31 @@ export function Contacts() {
   const filteredContacts = getFilteredContacts(contacts, filteredName);
 
   return (
-    <List>
-      {filteredContacts.map(({ id, name, number }) => (
-        <Item key={id}>
-          <Text>
-            {name}: <span>{number}</span>
-          </Text>
-          <Button
-            onClick={() => {
-              deleteSelectedContact(id);
-            }}
-          >
-            Delete
-          </Button>
-        </Item>
-      ))}
-      {!contacts.length && (
+    <>
+      {Boolean(filteredContacts.length) && (
+        <List>
+          {filteredContacts.map(({ id, name, number }) => (
+            <Item key={id}>
+              <Text>
+                {name}: <span>{number}</span>
+              </Text>
+              <Button
+                onClick={() => {
+                  deleteSelectedContact(id);
+                }}
+              >
+                Delete
+              </Button>
+            </Item>
+          ))}
+        </List>
+      )}
+      {!Boolean(contacts.length) && (
         <Notification message="There are no contacts in the phonebook yet..." />
       )}
-      {!contacts.length && !filteredContacts && (
+      {Boolean(contacts.length) && !Boolean(filteredContacts.length) && (
         <Notification message="There isn't such a contact..." />
       )}
-    </List>
+    </>
   );
 }

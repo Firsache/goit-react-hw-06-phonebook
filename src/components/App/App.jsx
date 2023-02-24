@@ -4,7 +4,7 @@ import { MdContactPhone } from 'react-icons/md';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { selectContacts } from 'redux/contacts/selectors';
+import { selectContacts, selectFilteredName } from 'redux/contacts/selectors';
 import { selectThemeTitle } from 'redux/global/selectors';
 
 import { Container, Title } from './App.styled';
@@ -24,7 +24,7 @@ import {
 export function App() {
   const contacts = useSelector(selectContacts);
   const themeTitle = useSelector(selectThemeTitle);
-
+  const filteredName = useSelector(selectFilteredName);
   const normalizedTheme = { ...theme, ...colors[themeTitle] };
 
   return (
@@ -52,37 +52,7 @@ export function App() {
         <Container>
           <Form />
           <Section title="Contacts">
-            {/* варінт 1
-            {switch (contacts.length){
-            case 0:
-            <Notification message="There are no contacts in the phonebook yet..." />;
-            break;
-            case 1:
-            <Contacts />;
-            break;
-            default:
-              <Contacts>
-                <Filter />
-              </Contacts>}
-          } */}
-            {/* варінт 2
-            {contacts.length > 1 && 
-              <Contacts>
-                <Filter />
-              </Contacts>}
-            {contacts.length === 1 && <Contacts />}
-            {contacts.length === 0 && (
-              <Notification message="There are no contacts in the phonebook yet..." />
-            )} */}
-            {/* варінт 3
-            {contacts?.length ? (
-              <Contacts>
-                <Filter />
-              </Contacts>
-            ) : (
-              <Notification message="There are no contacts in the phonebook yet..." />
-            )} */}
-            {contacts.length > 1 && <Filter />}
+            {(contacts.length > 1 || filteredName) && <Filter />}
             <Contacts />
           </Section>
           <ToastContainer autoClose={3000} />
